@@ -114,24 +114,24 @@ public class SameGame extends Application {
      * @returns An ArrayList of type Button
      */
     public ArrayList<Button> checkNeighbors(int x, int y, ArrayList<Button> checked) {
-        Button currentButt = buttons[x][y];
-        checked.add(currentButt);
-        Paint checkingColor = ((Circle)currentButt.getGraphic()).getFill();
+        Button currentButton = buttons[x][y];
+        checked.add(currentButton);
+        Paint checkingColor = ((Circle)currentButton.getGraphic()).getFill();
 
         //check up
         if (y-1 >= 0){
-            Button upButt = buttons[x][y-1];
+            Button upButton = buttons[x][y-1];
 
-            if (((Circle)upButt.getGraphic()).getFill().equals(checkingColor) && !checked.contains(upButt)) {
+            if (((Circle)upButton.getGraphic()).getFill().equals(checkingColor) && !checked.contains(upButton)) {
                 checkNeighbors(x, y-1, checked);
             }
         }
 
         //check right
         if (x+1 < this.getColumns()){
-            Button rightButt = buttons[x+1][y];
+            Button rightButton = buttons[x+1][y];
 
-            if (((Circle)rightButt.getGraphic()).getFill().equals(checkingColor) && !checked.contains(rightButt)) {
+            if (((Circle)rightButton.getGraphic()).getFill().equals(checkingColor) && !checked.contains(rightButton)) {
                 checkNeighbors(x+1, y, checked);
             }
         }
@@ -139,18 +139,18 @@ public class SameGame extends Application {
 
         //check down
         if (y+1 < this.getRows()) {
-            Button downButt = buttons[x][y+1];
+            Button downButton = buttons[x][y+1];
 
-            if (((Circle)downButt.getGraphic()).getFill().equals(checkingColor) && !checked.contains(downButt)) {
+            if (((Circle)downButton.getGraphic()).getFill().equals(checkingColor) && !checked.contains(downButton)) {
                 checkNeighbors(x, y+1, checked);
             }
         }
 
         //check left
         if (x-1 >= 0){
-            Button leftButt = buttons[x-1][y];
+            Button leftButton = buttons[x-1][y];
 
-            if (((Circle)leftButt.getGraphic()).getFill().equals(checkingColor) && !checked.contains(leftButt)) {
+            if (((Circle)leftButton.getGraphic()).getFill().equals(checkingColor) && !checked.contains(leftButton)) {
                 checkNeighbors(x-1, y, checked);
             }
         }
@@ -164,10 +164,10 @@ public class SameGame extends Application {
     public void shiftDown() {
         for (int i = 0; i < getColumns(); i++) {
             for (int j = 0; j < getRows(); j++) {
-                Button butt = buttons[j][i];
-                Paint color = ((Circle)butt.getGraphic()).getFill();
+                Button button = buttons[j][i];
+                Paint color = ((Circle)button.getGraphic()).getFill();
 
-                if (((Circle)butt.getGraphic()).getFill().equals(Color.LIGHTGRAY)) {
+                if (((Circle)button.getGraphic()).getFill().equals(Color.LIGHTGRAY)) {
                     for (int x = j; x > 0; x--) {
                         Circle newCircle = new Circle(15);
                         newCircle.setFill(((Circle)buttons[x-1][i].getGraphic()).getFill());
@@ -186,9 +186,9 @@ public class SameGame extends Application {
         for (int i = 0; i < getColumns(); i++) {
             boolean columnGray = true;
             for (int j = 0; j < getRows(); j++) {
-                Button butt = buttons[j][i];
+                Button button = buttons[j][i];
 
-                if (!((Circle)butt.getGraphic()).getFill().equals(Color.LIGHTGRAY)) {
+                if (!((Circle)button.getGraphic()).getFill().equals(Color.LIGHTGRAY)) {
                     columnGray = false;
                 }
 
@@ -238,19 +238,19 @@ public class SameGame extends Application {
 
         for (int i = 0; i < getRows(); i++) {
             for (int j = 0; j < getColumns(); j++) {
-                Button butt = new Button();
+                Button button = new Button();
                 butt.setOnAction((e) -> {
                     Button b = (Button) e.getSource();
                     int x = GridPane.getRowIndex(b);
                     int y = GridPane.getColumnIndex(b);
 
-                    ArrayList<Button> butts = checkNeighbors(x, y, new ArrayList<Button>());
+                    ArrayList<Button> buttons = checkNeighbors(x, y, new ArrayList<Button>());
 
-                    if (butts.size() > 1) {
-                        for (Button be : butts) {
+                    if (buttons.size() > 1) {
+                        for (Button b : buttons) {
                             Circle circle = new Circle(15);
                             circle.setFill(Color.LIGHTGRAY);
-                            be.setGraphic(circle);
+                            b.setGraphic(circle);
                         }
                     }
 
@@ -258,7 +258,7 @@ public class SameGame extends Application {
                     this.shiftLeft();
                 });
 
-                buttons[i][j] = butt;
+                buttons[i][j] = button;
                 buttons[i][j].setPrefSize(60, 60);
                 Circle circle = new Circle(15);
                 circle.setFill(colorArray[(int) (Math.random() * this.getNumColors())]);
