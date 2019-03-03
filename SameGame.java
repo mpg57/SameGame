@@ -239,7 +239,7 @@ public class SameGame extends Application {
         for (int i = 0; i < getRows(); i++) {
             for (int j = 0; j < getColumns(); j++) {
                 Button button = new Button();
-                butt.setOnAction((e) -> {
+                button.setOnAction((e) -> {
                     Button b = (Button) e.getSource();
                     int x = GridPane.getRowIndex(b);
                     int y = GridPane.getColumnIndex(b);
