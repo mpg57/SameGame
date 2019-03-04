@@ -42,10 +42,10 @@ public class SameGame extends Application {
      * Class constructor intializing default characteristics for GridPane
      */
     public SameGame() {
-        this.rows = 20;
-        this.columns = 20;
+        this.rows = 15;
+        this.columns = 15;
         this.numColors = 4;
-        this.radius = 30;
+        this.radius = 25;
     }
 
     /**
