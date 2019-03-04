@@ -1,4 +1,2 @@
 # SameGame
-Created a version of the game 'Same Game' using Java and JavaFX for EECS132 (Introduction to Programming in Java) at Case Western reserve University.
-
-Mia Gorczyca
+This is a version of the tile-matching puzzle game 'Same Game'. My version of the game is inspired by the band Gorillaz. 
