@@ -7,7 +7,11 @@ import javafx.scene.control.Button;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import java.util.ArrayList;
-
+import java.util.Arrays;
+import javafx.scene.paint.ImagePattern;
+import javafx.scene.media.AudioClip;
+import javafx.scene.image.Image;
+import static javafx.scene.media.AudioClip.INDEFINITE;
 
 /**
  * SameGame.java - a class for playing Same Game
@@ -26,26 +30,22 @@ public class SameGame extends Application {
     private int rows;
     private int columns;
     private int numColors;
-
-    private boolean isSameColor;
-    private int count = 0;
-
-
+    private int radius;
     private GridPane gridPane;
     public Button[][] buttons;
 
 
-    boolean[][] isEmpty = new boolean[12][12];
-
     Color[] colorArray = {Color.MAGENTA, Color.LIMEGREEN, Color.DEEPSKYBLUE, Color.BLUEVIOLET, Color.PEACHPUFF, Color.YELLOW, Color.ORANGERED, Color.INDIGO, Color.DARKTURQUOISE, Color.SPRINGGREEN};
+    Image[] imageArray = {new Image("Murdoc.png"), new Image("Noodle.png"), new Image("Russel.png"), new Image("2D.png")};
 
     /**
      * Class constructor intializing default characteristics for GridPane
      */
     public SameGame() {
-        this.rows = 12;
-        this.columns = 12;
-        this.numColors = 3;
+        this.rows = 20;
+        this.columns = 20;
+        this.numColors = 4;
+        this.radius = 30;
     }
 
     /**
@@ -116,13 +116,13 @@ public class SameGame extends Application {
     public ArrayList<Button> checkNeighbors(int x, int y, ArrayList<Button> checked) {
         Button currentButton = buttons[x][y];
         checked.add(currentButton);
-        Paint checkingColor = ((Circle)currentButton.getGraphic()).getFill();
+        Paint checkingColor = ((Circle)currentButton.getGraphic()).getStroke();
 
         //check up
         if (y-1 >= 0){
             Button upButton = buttons[x][y-1];
 
-            if (((Circle)upButton.getGraphic()).getFill().equals(checkingColor) && !checked.contains(upButton)) {
+            if (((Circle)upButton.getGraphic()).getStroke().equals(checkingColor) && !checked.contains(upButton)) {
                 checkNeighbors(x, y-1, checked);
             }
         }
@@ -131,7 +131,7 @@ public class SameGame extends Application {
         if (x+1 < this.getColumns()){
             Button rightButton = buttons[x+1][y];
 
-            if (((Circle)rightButton.getGraphic()).getFill().equals(checkingColor) && !checked.contains(rightButton)) {
+            if (((Circle)rightButton.getGraphic()).getStroke().equals(checkingColor) && !checked.contains(rightButton)) {
                 checkNeighbors(x+1, y, checked);
             }
         }
@@ -141,8 +141,8 @@ public class SameGame extends Application {
         if (y+1 < this.getRows()) {
             Button downButton = buttons[x][y+1];
 
-            if (((Circle)downButton.getGraphic()).getFill().equals(checkingColor) && !checked.contains(downButton)) {
-                checkNeighbors(x, y+1, checked);
+            if (((Circle)downButton.getGraphic()).getStroke().equals(checkingColor) && !checked.contains(downButton)) {
+                checkNeighbors(x,y+1, checked);
             }
         }
 
@@ -150,7 +150,7 @@ public class SameGame extends Application {
         if (x-1 >= 0){
             Button leftButton = buttons[x-1][y];
 
-            if (((Circle)leftButton.getGraphic()).getFill().equals(checkingColor) && !checked.contains(leftButton)) {
+            if (((Circle)leftButton.getGraphic()).getStroke().equals(checkingColor) && !checked.contains(leftButton)) {
                 checkNeighbors(x-1, y, checked);
             }
         }
@@ -162,18 +162,16 @@ public class SameGame extends Application {
      * Moves all button colors above "empty" buttons down
      */
     public void shiftDown() {
-        for (int i = 0; i < getColumns(); i++) {
-            for (int j = 0; j < getRows(); j++) {
-                Button button = buttons[j][i];
-                Paint color = ((Circle)button.getGraphic()).getFill();
+        for (int col = 0; col < getColumns(); col++) {
+            for (int row = getRows() - 2; row >= 0; row--) {
+                if (ButtonBelowIsEmpty(row, col)) {
+                    buttons[row + 1][col].setGraphic(buttons[row][col].getGraphic());
 
-                if (((Circle)button.getGraphic()).getFill().equals(Color.LIGHTGRAY)) {
-                    for (int x = j; x > 0; x--) {
-                        Circle newCircle = new Circle(15);
-                        newCircle.setFill(((Circle)buttons[x-1][i].getGraphic()).getFill());
-                        buttons[x][i].setGraphic(newCircle);
-                    }
-                    buttons[0][i].setGraphic(new Circle(15, Color.LIGHTGRAY));
+                    Circle grayCircle = new Circle(radius, Color.LIGHTGRAY);
+                    grayCircle.setStroke(Color.LIGHTGRAY);
+                    buttons[row][col].setGraphic(grayCircle);
+
+
                 }
             }
         }
@@ -183,32 +181,23 @@ public class SameGame extends Application {
      * Moves all button colors to the right of "empty" button columns to the left
      */
     public void shiftLeft() {
-        for (int i = 0; i < getColumns(); i++) {
-            boolean columnGray = true;
-            for (int j = 0; j < getRows(); j++) {
-                Button button = buttons[j][i];
+        for (int i = 0; i < getColumns() - 1; i++) {
+            if (columnEmpty(i)) {
+                // For every column right of an empty column
+                for (int j = i + 1; j < getColumns(); j++) {
+                    // For every row in the column
+                    for (int row = 0; row < getRows(); row++) {
+                        buttons[row][j-1].setGraphic(buttons[row][j].getGraphic());
 
-                if (!((Circle)button.getGraphic()).getFill().equals(Color.LIGHTGRAY)) {
-                    columnGray = false;
-                }
+                        Circle grayCircle = new Circle(radius, Color.LIGHTGRAY);
+                        grayCircle.setStroke(Color.LIGHTGRAY);
+                        buttons[row][j].setGraphic(grayCircle);
 
-                if (j == getRows() - 1 && columnGray) {
-                    for (int x = i; x < getColumns(); x++) {
-                        for (int y = 0; y < getRows(); y++) {
-                            if (x == getColumns() - 1) {
-                                buttons[y][x].setGraphic(new Circle(15, Color.LIGHTGRAY));
-                                continue;
-                            }
-
-                            Circle newCircle = new Circle(15);
-                            newCircle.setFill(((Circle) buttons[y][x + 1].getGraphic()).getFill());
-                            buttons[y][x].setGraphic(newCircle);
-                        }
-                        System.out.println(columnEmpty(i));
                     }
                 }
             }
         }
+
     }
 
     /**
@@ -216,6 +205,13 @@ public class SameGame extends Application {
      * @param col A variable of type int
      * @returns A boolean variable
      */
+    public boolean ButtonBelowIsEmpty(int row, int col) {
+        if (! ((Circle)buttons[row+1][col].getGraphic()).getFill().equals(Color.LIGHTGRAY)) {
+            return false;
+        }
+        return true;
+    }
+
     public boolean columnEmpty(int col) {
         for (int i = 0; i < getRows(); i++) {
             if (!((Circle)buttons[i][col].getGraphic()).getFill().equals(Color.LIGHTGRAY)) {
@@ -223,6 +219,16 @@ public class SameGame extends Application {
             }
         }
         return true;
+    }
+    /**
+     * Starts audio
+     */
+    public void startMusic(String musicFileName) {
+        int s = INDEFINITE;
+        AudioClip audio = new AudioClip(getClass().getResource(musicFileName).toExternalForm());
+        audio.setVolume(0.5f);
+        audio.setCycleCount(s);
+        audio.play();
     }
 
     /**
@@ -247,21 +253,30 @@ public class SameGame extends Application {
                     ArrayList<Button> buttons = checkNeighbors(x, y, new ArrayList<Button>());
 
                     if (buttons.size() > 1) {
-                        for (Button b : buttons) {
-                            Circle circle = new Circle(15);
+                        for (Button currentb : buttons) {
+                            Circle circle = new Circle(radius);
                             circle.setFill(Color.LIGHTGRAY);
-                            b.setGraphic(circle);
+                            circle.setStroke(Color.LIGHTGRAY);
+                            currentb.setGraphic(circle);
                         }
                     }
+                    for (int size = 0; size < buttons.size(); size++) {
+                        this.shiftDown();
+                        this.shiftLeft();
+                    }
 
-                    this.shiftDown();
-                    this.shiftLeft();
+
+
                 });
 
                 buttons[i][j] = button;
                 buttons[i][j].setPrefSize(60, 60);
-                Circle circle = new Circle(15);
-                circle.setFill(colorArray[(int) (Math.random() * this.getNumColors())]);
+                Circle circle = new Circle(radius);
+                circle.setStroke(colorArray[(int) (Math.random() * this.getNumColors())]);
+                // Set image
+                Image settingImage = imageArray[Arrays.asList(colorArray).indexOf(circle.getStroke())];
+                circle.setFill(new ImagePattern(settingImage));
+
                 buttons[i][j].setGraphic(circle);
                 gridPane.add(buttons[i][j], j, i);
 
@@ -269,9 +284,11 @@ public class SameGame extends Application {
             }
         }
 
+
         Scene scene = new Scene(gridPane);
         primaryStage.setScene(scene);
         primaryStage.show();
+        startMusic("FeelGoodInc.wav");
     }
 
 
@@ -282,4 +299,4 @@ public class SameGame extends Application {
     public static void main(String[] args) {
         launch(args);
     }
- }
+}
