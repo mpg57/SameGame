@@ -34,7 +34,6 @@ public class SameGame extends Application {
     private GridPane gridPane;
     public Button[][] buttons;
 
-
     Color[] colorArray = {Color.MAGENTA, Color.LIMEGREEN, Color.DEEPSKYBLUE, Color.BLUEVIOLET, Color.PEACHPUFF, Color.YELLOW, Color.ORANGERED, Color.INDIGO, Color.DARKTURQUOISE, Color.SPRINGGREEN};
     Image[] imageArray = {new Image("Murdoc.png"), new Image("Noodle.png"), new Image("Russel.png"), new Image("2D.png")};
 
@@ -170,8 +169,6 @@ public class SameGame extends Application {
                     Circle grayCircle = new Circle(radius, Color.LIGHTGRAY);
                     grayCircle.setStroke(Color.LIGHTGRAY);
                     buttons[row][col].setGraphic(grayCircle);
-
-
                 }
             }
         }
@@ -192,12 +189,10 @@ public class SameGame extends Application {
                         Circle grayCircle = new Circle(radius, Color.LIGHTGRAY);
                         grayCircle.setStroke(Color.LIGHTGRAY);
                         buttons[row][j].setGraphic(grayCircle);
-
                     }
                 }
             }
         }
-
     }
 
     /**
@@ -237,9 +232,7 @@ public class SameGame extends Application {
      */
     @Override
     public void start(Stage primaryStage) {
-
         gridPane = new GridPane();
-
         buttons = new Button[this.getRows()][this.getColumns()];
 
         for (int i = 0; i < getRows(); i++) {
@@ -264,11 +257,7 @@ public class SameGame extends Application {
                         this.shiftDown();
                         this.shiftLeft();
                     }
-
-
-
                 });
-
                 buttons[i][j] = button;
                 buttons[i][j].setPrefSize(60, 60);
                 Circle circle = new Circle(radius);
@@ -279,18 +268,14 @@ public class SameGame extends Application {
 
                 buttons[i][j].setGraphic(circle);
                 gridPane.add(buttons[i][j], j, i);
-
-
             }
         }
-
 
         Scene scene = new Scene(gridPane);
         primaryStage.setScene(scene);
         primaryStage.show();
         startMusic("FeelGoodInc.wav");
     }
-
 
     /**
      * Main method that starts a new same game instance
